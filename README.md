@@ -2,7 +2,22 @@
 
 Heavily influenced by: [GSD](https://github.com/gsd-build/get-shit-done)
 
-Claude Code skills that automate the full feature development lifecycle — from GitHub issue to merged PR — using AI sub-agents.
+## Why Specky?
+
+Most AI coding tools help you write code faster. Specky helps you build features *correctly* — by enforcing a structured workflow before any code is written.
+
+**The problem:** You describe a feature to an AI, it generates code, and you spend hours debugging edge cases it missed, reworking logic that doesn't fit your architecture, or realizing the requirements were never clear in the first place.
+
+**Specky's approach:** Treat every feature as a spec with acceptance criteria, research the codebase for context, decompose work into dependency-ordered stages, then execute each stage with focused sub-agents that follow your project's conventions. Everything is tracked in GitHub Issues — no local state, no context lost between sessions.
+
+**Built for teams:** Create a spec and hand it off. Anyone (human or AI) can pick it up at any stage — plan it, execute it, or review it — because all context lives in the issue. Labels track progress. Plans are visible. Commits trace back to stages.
+
+### What it does
+
+- **Structured spec interviews** that produce measurable acceptance criteria before coding starts
+- **Codebase-aware planning** that searches your code and related issues for architectural context
+- **Parallel execution** with sub-agents scoped to individual stages, using your project's test framework
+- **Full traceability** — every commit links to a spec and stage, every PR auto-closes its issue
 
 ---
 
@@ -196,8 +211,8 @@ Issue closure happens automatically when the PR merges (via `Closes #id` in the 
 All state lives in GitHub Issues:
 
 - Spec details, acceptance criteria, research notes → **issue body sections**
-- Execution plan with stages and dependencies → **hidden HTML comment in issue body** (`<!-- specky-plan ... specky-plan -->`)
-- Stage completion status → **task-list checkboxes + plan JSON updates**
+- Execution plan with stages and dependencies → **fenced YAML block in issue body** (` ```specky-plan `)
+- Stage completion status → **task-list checkboxes + plan YAML updates**
 
 No local cache, no `.specky-cache/`, no `.gitignore` changes. Works across machines and team members.
 
@@ -281,7 +296,7 @@ Research context and decompose a spec into executable stages.
 2. Asks targeted clarifying questions for ambiguous or missing details
 3. Appends research findings to the issue body
 4. Decomposes into stages following natural seams (schema, API, logic, UI, tests)
-5. Appends task-list + embedded plan JSON to issue body
+5. Appends task-list + embedded plan YAML to issue body
 6. No local files created — everything is in the issue
 
 **Flags:**
@@ -359,7 +374,7 @@ Fetch, prioritize, and triage bugs. Two modes:
 
 ### How it works
 
-1. **Plan parsing** — The orchestrator reads the plan JSON from the issue body's HTML comment and builds a dependency graph from each stage's `depends_on` array.
+1. **Plan parsing** — The orchestrator reads the plan YAML from the issue body's fenced ` ```specky-plan ` block and builds a dependency graph from each stage's `depends_on` array.
 
 2. **Batch grouping:**
    - **Batch 0** — stages with no dependencies (run immediately)
